@@ -1,4 +1,3 @@
-// script.js
 import * as THREE from 'https://esm.sh/three';
 import { OrbitControls } from 'https://esm.sh/three/examples/jsm/controls/OrbitControls.js';
 
@@ -19,18 +18,23 @@ const planetData = [
 
 init();
 
-
-// star animation 
-
 function init() {
   scene = new THREE.Scene();
   addStarfield();
   clock = new THREE.Clock();
 
-  camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 1000);
+  camera = new THREE.PerspectiveCamera(
+    window.innerWidth < 600 ? 75 : 65,
+    window.innerWidth / window.innerHeight,
+    0.1,
+    1000
+  );
   camera.position.set(0, 40, 140);
 
-  renderer = new THREE.WebGLRenderer({ canvas: document.getElementById("solarCanvas"), antialias: true });
+  renderer = new THREE.WebGLRenderer({
+    canvas: document.getElementById("solarCanvas"),
+    antialias: true
+  });
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setPixelRatio(window.devicePixelRatio);
 
@@ -50,11 +54,10 @@ function init() {
   animate();
 }
 
-// star add
-
 function addStarfield(count = 1000) {
   const geometry = new THREE.BufferGeometry();
   const positions = [];
+
   for (let i = 0; i < count; i++) {
     positions.push(
       THREE.MathUtils.randFloatSpread(600),
@@ -62,6 +65,7 @@ function addStarfield(count = 1000) {
       THREE.MathUtils.randFloatSpread(600)
     );
   }
+
   geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
   const material = new THREE.PointsMaterial({ color: 0xffffff, size: 1.2, sizeAttenuation: true, opacity: 0.85 });
   scene.add(new THREE.Points(geometry, material));
@@ -81,46 +85,53 @@ function addSun() {
   scene.add(sun);
 }
 
-// controless
 function addPlanets() {
   const panel = document.getElementById("controlPanel");
+panel.style.maxWidth = window.innerWidth < 600 ? '95%' : '100%';
 
-  planetData.forEach(data => {
-    const geometry = new THREE.SphereGeometry(data.size, 32, 32);
-    const material = new THREE.MeshStandardMaterial({ color: data.color });
-    const planet = new THREE.Mesh(geometry, material);
+planetData.forEach(data => {
+  const geometry = new THREE.SphereGeometry(data.size, 32, 32);
+  const material = new THREE.MeshStandardMaterial({ color: data.color });
+  const planet = new THREE.Mesh(geometry, material);
 
-    planet.userData = { angle: 0, speed: data.speed, dist: data.dist };
-    planet.name = data.name;
-    planets.push(planet);
-    scene.add(planet);
+  planet.userData = { angle: 0, speed: data.speed, dist: data.dist };
+  planet.name = data.name;
+  planets.push(planet);
+  scene.add(planet);
 
-    const curve = new THREE.EllipseCurve(0, 0, data.dist, data.dist);
-    const points = curve.getPoints(100).map(p => new THREE.Vector3(p.x, 0, p.y));
-    const orbit = new THREE.Line(
-      new THREE.BufferGeometry().setFromPoints(points),
-      new THREE.LineBasicMaterial({ color: data.color, transparent: true, opacity: 0.5 })
-    );
-    scene.add(orbit);
+  const curve = new THREE.EllipseCurve(0, 0, data.dist, data.dist);
+  const points = curve.getPoints(100).map(p => new THREE.Vector3(p.x, 0, p.y));
+  const orbit = new THREE.Line(
+    new THREE.BufferGeometry().setFromPoints(points),
+    new THREE.LineBasicMaterial({ color: data.color, transparent: true, opacity: 0.5 })
+  );
+  scene.add(orbit);
 
-    // pln name
+  const label = makeLabel(data.name);
+  label.position.set(data.dist, 2.5, 0);
+  scene.add(label);
 
-    const label = makeLabel(data.name);
-    label.position.set(data.dist, 2.5, 0);
-    scene.add(label);
+  // 🧩 Compact slider block
+  const container = document.createElement("div");
+  container.className = "slider-block";
 
-    const labelEl = document.createElement("label");
-    labelEl.textContent = `${data.name} Speed:`;
-    const slider = document.createElement("input");
-    slider.type = "range";
-    slider.min = 0;
-    slider.max = 0.1;
-    slider.step = 0.001;
-    slider.value = data.speed;
-    slider.oninput = () => (planet.userData.speed = parseFloat(slider.value));
-    panel.appendChild(labelEl);
-    panel.appendChild(slider);
-  });
+  const labelEl = document.createElement("label");
+  labelEl.textContent = data.name;
+
+  const slider = document.createElement("input");
+  slider.type = "range";
+  slider.min = 0;
+  slider.max = 0.1;
+  slider.step = 0.001;
+  slider.value = data.speed;
+  slider.style.width = "100%";
+  slider.oninput = () => (planet.userData.speed = parseFloat(slider.value));
+
+  container.appendChild(labelEl);
+  container.appendChild(slider);
+  panel.appendChild(container);
+});
+
 }
 
 function makeLabel(text) {
@@ -138,8 +149,6 @@ function makeLabel(text) {
   sprite.scale.set(12, 3, 1);
   return sprite;
 }
-
-// mtor - random
 
 function addMeteors() {
   for (let i = 0; i < 6; i++) {
@@ -214,8 +223,6 @@ function flyToPlanet(planet) {
   requestAnimationFrame(animateFly);
 }
 
-// btn
-
 function setupUI() {
   document.getElementById("pauseBtn").onclick = () => {
     isPaused = !isPaused;
@@ -237,6 +244,7 @@ function animate() {
       const d = p.userData.dist;
       p.position.set(Math.cos(a) * d, 0, Math.sin(a) * d);
     });
+
     meteorGroup.forEach(m => {
       m.position.add(m.userData.vel);
       if (m.position.y < -50) {
@@ -248,6 +256,7 @@ function animate() {
       }
     });
   }
+
   controls.update();
   renderer.render(scene, camera);
 }

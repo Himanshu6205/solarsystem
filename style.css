@@ -11,13 +11,9 @@ body {
   overflow: hidden;
 }
 
-h1 {
-  position: absolute;
-  top: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 1.4rem;
-  z-index: 10;
+.light-mode {
+  background-color: #f0f0f0;
+  color: black;
 }
 
 canvas {
@@ -26,16 +22,44 @@ canvas {
   height: 100vh;
 }
 
+h1 {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.4rem;
+  z-index: 10;
+  text-align: center;
+}
+
 #controlPanel {
   position: absolute;
   top: 60px;
   left: 10px;
+  right: 10px;
   padding: 10px;
   background: rgba(0, 0, 0, 0.6);
   border-radius: 10px;
-  max-height: 85vh;
-  overflow-y: auto;
   z-index: 15;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-start;
+}
+
+#controlPanel label {
+  font-size: 12px;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.slider-block {
+  width: 90px;
+}
+
+body.light-mode #controlPanel {
+  background: rgba(255, 255, 255, 0.9);
+  color: black;
 }
 
 #controlPanel label {
@@ -45,7 +69,7 @@ canvas {
 }
 
 #controlPanel input[type="range"] {
-  width: 150px;
+  width: 100%;
 }
 
 #controls {
@@ -53,10 +77,12 @@ canvas {
   top: 10px;
   left: 10px;
   z-index: 15;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 #controls button {
-  margin-right: 10px;
   padding: 6px 12px;
   background-color: #444;
   color: white;
@@ -64,6 +90,11 @@ canvas {
   border-radius: 6px;
   cursor: pointer;
   font-size: 14px;
+}
+
+body.light-mode #controls button {
+  background-color: #ddd;
+  color: black;
 }
 
 #tooltip {
@@ -76,9 +107,11 @@ canvas {
   font-size: 12px;
   display: none;
   z-index: 999;
+  max-width: 150px;
+  word-wrap: break-word;
 }
 
-.light-mode {
-  background-color: #f0f0f0;
+body.light-mode #tooltip {
+  background: #eee;
   color: black;
 }
