@@ -1,0 +1,84 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: black;
+  color: white;
+  font-family: sans-serif;
+  overflow: hidden;
+}
+
+h1 {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.4rem;
+  z-index: 10;
+}
+
+canvas {
+  display: block;
+  width: 100vw;
+  height: 100vh;
+}
+
+#controlPanel {
+  position: absolute;
+  top: 60px;
+  left: 10px;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 10px;
+  max-height: 85vh;
+  overflow-y: auto;
+  z-index: 15;
+}
+
+#controlPanel label {
+  display: block;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+#controlPanel input[type="range"] {
+  width: 150px;
+}
+
+#controls {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 15;
+}
+
+#controls button {
+  margin-right: 10px;
+  padding: 6px 12px;
+  background-color: #444;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+#tooltip {
+  position: absolute;
+  background: #222;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 6px;
+  pointer-events: none;
+  font-size: 12px;
+  display: none;
+  z-index: 999;
+}
+
+.light-mode {
+  background-color: #f0f0f0;
+  color: black;
+}
